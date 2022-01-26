@@ -3,12 +3,15 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./lib/universe.common.js",
   "module": "lib/universe.esm.js",
   "unpkg": "lib/universe.umd.js",
   "jsdelivr": "lib/universe.iife.js",
   "typings": "./src/index.ts",
+  "scripts": {
+    "build": "pnpm rollup -c"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.1.3",
