@@ -1,5 +1,6 @@
 {
   "name": "universe",
+  "version": "1.0.0",
   "main": "./lib/universe.common.js",
   "module": "lib/universe.esm.js",
   "unpkg": "lib/universe.umd.js",
