@@ -2,6 +2,8 @@
 
 ## 预览
 
+[哔哩哔哩](https://www.bilibili.com/video/BV19F411p7Dj?share_source=copy_web)
+
 ## git started
 
 ### 对于在 html 文件中
@@ -27,7 +29,7 @@
     <title>Document</title>
   </head>
   <body>
-    yh
+    <canvas id="universe"> </canvas>
     <script type="module">
       //需要使用vscode live serve打开，直接打开会因为文件连接不允许获取文件，夸域错误
       alert(`
@@ -36,7 +38,7 @@
         shift + n  ：添加一个星球
       `)
 
-      import { Universe } from './lib/universe.esm.js'
+      import { Universe } from './node_modules/@mekefly/universe/lib/universe.esm.js'
 
       new Universe(document.getElementById('universe'))
     </script>
@@ -102,4 +104,4 @@ new Universe(document.getElementById('universe'))
 
 ## ！
 
-项目中有一部分是关于四叉树万有引力模拟的代码，并没有启用，因为可能有相关 bug 没找到，导致运行精度异常，没使用四叉树运行的情况下运行效率很低，多放几个球就要卡死了
+项目中有一部分是关于四叉树万有引力模拟的代码，并没有启用，因为可能有相关 bug 没找到，导致运行精度异常，没使用四叉树运行的情况下运行效率很低

@@ -1,5 +1,8 @@
 {
-  "name": "universe",
+  "name": "@mekefly/universe",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "1.0.0",
   "main": "./lib/universe.common.js",
   "module": "lib/universe.esm.js",
