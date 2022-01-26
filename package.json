@@ -1,0 +1,21 @@
+{
+  "name": "universe",
+  "main": "./lib/universe.common.js",
+  "module": "lib/universe.esm.js",
+  "unpkg": "lib/universe.umd.js",
+  "jsdelivr": "lib/universe.iife.js",
+  "typings": "./src/index.ts",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "eslint": "^8.7.0",
+    "eslint-cli": "^1.1.1",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.5.1",
+    "require": "^2.4.20",
+    "rollup": "^2.66.1",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.5.5"
+  }
+}

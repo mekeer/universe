@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="universe"> </canvas>
+    <script type="module">
+      //需要使用vscode live serve打开，直接打开会因为文件连接不允许获取文件，夸域错误
+      alert(`
+        shift + 鼠标：左键拖动画布
+        shift + 滚轮：放大缩小
+        shift + n  ：添加一个星球
+      `)
+
+      import { Universe } from './lib/universe.esm.js'
+
+      new Universe(document.getElementById('universe'))
+    </script>
+    <style>
+      * {
+        margin: 0px;
+        padding: 0px;
+      }
+
+      body {
+        overflow: hidden;
+      }
+      #universe {
+        background-color: #000;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+    </style>
+  </body>
+</html>

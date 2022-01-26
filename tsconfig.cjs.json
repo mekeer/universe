@@ -1,0 +1,8 @@
+//rollup需要导出esmode类型的模块的配置
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2015"
+  }
+}
