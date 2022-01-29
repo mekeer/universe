@@ -3,14 +3,19 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "./lib/universe.common.js",
   "module": "lib/universe.esm.js",
   "unpkg": "lib/universe.umd.js",
   "jsdelivr": "lib/universe.iife.js",
   "typings": "./src/index.ts",
+  "files": [
+    "src",
+    "lib"
+  ],
   "scripts": {
-    "build": "pnpm rollup -c"
+    "build": "pnpm rollup -c",
+    "dev": "pnpm http-server"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.1",
@@ -18,6 +23,7 @@
     "eslint": "^8.7.0",
     "eslint-cli": "^1.1.1",
     "eslint-config-prettier": "^8.3.0",
+    "http-server": "^14.1.0",
     "prettier": "^2.5.1",
     "require": "^2.4.20",
     "rollup": "^2.66.1",

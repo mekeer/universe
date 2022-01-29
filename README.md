@@ -94,7 +94,20 @@ new Universe(document.getElementById('universe'))
  git clone https://github.com/mekefly/universe.git
 ```
 
-2. 使用 live serve 运行项目目录中的 test.html
+2. 运行
+
+- 使用 live serve
+
+使用 live serve 运行项目目录中的 test.html
+
+- 使用 http-server
+
+依次执行
+
+> pnpm install
+> pnpm dev
+
+注： 由于版本锁定问题，npm 未来有可能不能正常执行， 以使用`npm install -g pnpm`来安装 pnpm
 
 ## 操作
 
