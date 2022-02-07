@@ -11,6 +11,7 @@ export default class extends Render {
     this.startPosition = startPosition;
     this.endPosition = endPosition;
   }
+
   /**
    * 给ShowScreen调用的显现方法，让其可以显示出来
    *

@@ -35,9 +35,10 @@ export default class Star extends Render {
   public get quality(): number {
     return this._quality
   }
+
   public set quality(value: number) {
     this._quality = value
-    //默认把质量当作圆的面积得到半径
+    // 默认把质量当作圆的面积得到半径
     this.r = Math.sqrt(value / this.density / Math.PI)
   }
 
@@ -51,6 +52,7 @@ export default class Star extends Render {
   public get r(): number {
     return this._r
   }
+
   public set r(value: number) {
     this._r = value
     this._quality = Math.PI * value * value
@@ -67,6 +69,7 @@ export default class Star extends Render {
   public get density(): number {
     return this._density
   }
+
   public set density(value: number) {
     this._r = this.r = Math.sqrt(this._quality / value / Math.PI)
     this._density = value
@@ -82,6 +85,7 @@ export default class Star extends Render {
   public get byGravity(): ByGravity {
     return this._byGravity
   }
+
   public set byGravity(value: ByGravity) {
     this._byGravity = value
   }
@@ -123,7 +127,7 @@ export default class Star extends Render {
    * @param {CanvasRenderingContext2D} ctx
    * @param {ShowScreen} showScreen
    */
-  render(ctx: CanvasRenderingContext2D, showScreen: ShowScreen) {
+  render(ctx: CanvasRenderingContext2D, showScreen: ShowScreen): void {
     ctx.save()
     ctx.beginPath()
     ctx.fillStyle = this.color
@@ -146,8 +150,8 @@ export default class Star extends Render {
    * @param {Position} position
    * @return {*}
    */
-  checkIsPress(position: Position) {
-    let c: number = Position.distance(this.position, position)
+  checkIsPress(position: Position): boolean {
+    const c: number = Position.distance(this.position, position)
     return c < this.r
   }
 }

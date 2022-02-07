@@ -1,0 +1,12 @@
+{
+  "plugins": ["@typescript-eslint", "vue"],
+  "extends": ["standard-with-typescript", "prettier"],
+  "parserOptions": {
+    "project": "./tsconfig.eslint.json"
+  },
+  "rules": {
+    // off禁用
+    // 禁止强制类型转换
+    "@typescript-eslint/strict-boolean-expressions": "off"
+  }
+}

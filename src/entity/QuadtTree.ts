@@ -5,7 +5,7 @@ export default class QuadtTree {
   rightTop: QuadtTree | null = null;
   rightBottom: QuadtTree | null = null;
   leftBottom: QuadtTree | null = null;
-  list: Array<Star> = [];
+  list: Star[] = [];
   bigStar: Star;
   len: number = 0;
   qualitv: number = 0;

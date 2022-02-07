@@ -1,5 +1,4 @@
 import resolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
 import ts from 'rollup-plugin-typescript2'
 import path from 'path'
 import packageJSON from './package.json'
@@ -11,18 +10,17 @@ const extensions = ['.js', '.ts', '.tsx']
 // // ts
 const tsPlugin = ts({
   tsconfig: getPath('./tsconfig.esm.json'), // 导入本地ts配置
-  extensions
+  extensions,
 })
 
 const resolvePlugin = resolve(extensions)
-const commonjsPlugin = commonjs()
 
 const commonConf = {
   input: getPath('./src/index.ts'),
   plugins: [tsPlugin, resolvePlugin],
   output: {
-    name: packageJSON.name
-  }
+    name: packageJSON.name,
+  },
 }
 const preOutName = 'universe'
 const output = (type, preName = preOutName) =>
@@ -31,19 +29,19 @@ const output = (type, preName = preOutName) =>
 const OutputFormat = {
   //  异步模块定义，用于像RequireJS这样的模块加载器
   AMD: 'amd',
-  //CommonJS，适用于 Node 和 Browserify/Webpack
+  // CommonJS，适用于 Node 和 Browserify/Webpack
   CJS: 'cjs',
   ESM: 'esm',
   IIFE: 'iife',
   UMD: 'umd',
-  SYSTEM: 'system'
+  SYSTEM: 'system',
 }
 function genOutPut(type) {
   return {
     output: {
       format: type,
-      file: output(type)
-    }
+      file: output(type),
+    },
   }
 }
 
@@ -51,36 +49,36 @@ const builds = [
   {
     output: {
       file: packageJSON.main,
-      format: OutputFormat.CJS
-    }
+      format: OutputFormat.CJS,
+    },
   },
   {
     output: {
       file: packageJSON.module,
-      format: OutputFormat.ESM
-    }
+      format: OutputFormat.ESM,
+    },
   },
   {
     output: {
       name: packageJSON.name,
       file: packageJSON.unpkg,
-      format: OutputFormat.UMD
-    }
+      format: OutputFormat.UMD,
+    },
   },
   {
     output: {
       file: packageJSON.jsdelivr,
-      format: OutputFormat.IIFE
-    }
+      format: OutputFormat.IIFE,
+    },
   },
   genOutPut(OutputFormat.AMD),
-  genOutPut(OutputFormat.SYSTEM)
+  genOutPut(OutputFormat.SYSTEM),
 ]
 
 const buildConf = (options) => {
   return {
     ...commonConf,
-    ...options
+    ...options,
   }
 }
 

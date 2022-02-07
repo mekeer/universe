@@ -5,6 +5,8 @@ import Spe from './Spe'
 import Lanch from './Lanch'
 import Drive from './Drive'
 import Render from './Render'
+import { StateTheMouse } from '../emnu/StateTheMouse'
+import { Pattern } from '../emnu/Pattern'
 
 /**
  *显示区
@@ -40,6 +42,7 @@ export default class ShowScreen {
   get position(): Position {
     return this._position
   }
+
   set position(value: Position) {
     this._position = value
     this._area.startPosition = value
@@ -71,6 +74,7 @@ export default class ShowScreen {
   get height(): number {
     return this._height
   }
+
   set height(value: number) {
     const proportion = this._height / value
     this.canvas.height = value
@@ -115,9 +119,9 @@ export default class ShowScreen {
    * @type {Array<Star>}
    * @memberof ShowScreen
    */
-  protected list: Array<Star>
+  protected list: Star[]
 
-  public renderList: Array<Render> = []
+  public renderList: Render[] = []
 
   /**
    * 显示帧率
@@ -140,6 +144,7 @@ export default class ShowScreen {
   public get area(): Area {
     return this._area
   }
+
   public set area(value: Area) {
     this._area = value
     // this._position = value.startPosition;
@@ -181,7 +186,7 @@ export default class ShowScreen {
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
-    list: Array<Star>,
+    list: Star[],
     position: Position = new Position(),
     height: number,
     width: number,
@@ -202,31 +207,28 @@ export default class ShowScreen {
 
     this.drive = new Drive(() => {
       this.show()
-    }, fps)
-
-    new Drive(() => {
       this.FPS = this.fpsStatistics
       this.fpsStatistics = 0
-    }, 1)
+    }, fps)
 
-    //我们为窗体添加事件让显示窗可移动
+    // 我们为窗体添加事件让显示窗可移动
     canvas.addEventListener('mousedown', this.onMouseDown)
-    //鼠标移动监听
+    // 鼠标移动监听
     this.canvas.addEventListener('mousemove', this.onMouseMove)
-    //鼠标松开
+    // 鼠标松开
     canvas.addEventListener('mouseup', this.onMouseUp)
-    //鼠标移出范围
+    // 鼠标移出范围
     canvas.addEventListener('mouseleave', this.onMouseUp)
 
-    //窗口大小发生改变
+    // 窗口大小发生改变
     window.addEventListener('resize', this.onResize)
 
-    //按键事件
+    // 按键事件
     document.addEventListener('keydown', this.onKeyDown)
-    //鼠标滚轮
+    // 鼠标滚轮
     document.addEventListener('wheel', this.onWheel)
 
-    //按键松开
+    // 按键松开
     document.addEventListener('keyup', this.onKeyUp)
   }
 
@@ -236,7 +238,7 @@ export default class ShowScreen {
    * @param {KeyboardEvent} e
    * @memberof ShowScreen
    */
-  private onKeyDown = (e: KeyboardEvent) => {
+  private readonly onKeyDown = (e: KeyboardEvent) => {
     switch (e.code) {
       // case
       case 'ShiftLeft':
@@ -251,30 +253,32 @@ export default class ShowScreen {
         break
     }
   }
+
   /**
    *document 按键放开事件
    *
    * @param {KeyboardEvent} e
    * @memberof ShowScreen
    */
-  private onKeyUp = (e: KeyboardEvent) => {
+  private readonly onKeyUp = (e: KeyboardEvent) => {
     switch (e.code) {
       // case
       case 'ShiftLeft':
-        if (this.pattern != Pattern.NORMAL) {
+        if (this.pattern !== Pattern.NORMAL) {
           this.pattern = Pattern.NORMAL
         }
         break
     }
   }
+
   /**
    * document 滚轮事件
    *
    * @param {WheelEvent} e
    * @memberof ShowScreen
    */
-  private onWheel = (e: WheelEvent) => {
-    if (this.pattern == Pattern.ADJUSTMENT_MODE) {
+  private readonly onWheel = (e: WheelEvent) => {
+    if (this.pattern === Pattern.ADJUSTMENT_MODE) {
       this.magnifier(e)
     }
   }
@@ -286,7 +290,7 @@ export default class ShowScreen {
    * @private
    * @memberof ShowScreen
    */
-  private onResize = () => {
+  private readonly onResize = () => {
     setTimeout(() => {
       this.height = this.canvas.offsetHeight
       this.width = this.canvas.offsetWidth
@@ -300,24 +304,25 @@ export default class ShowScreen {
    * @param {WheelEvent} e
    * @memberof ShowScreen
    */
-  private magnifier(e: WheelEvent) {
-    //修改工作区大小
-    let rateConstant = 1.1
+  private magnifier(e: WheelEvent): void {
+    // 修改工作区大小
+    const rateConstant = 1.1
     if (e.deltaY > 0) {
-      //放大显示区
+      // 放大显示区
       this.enlarge(rateConstant)
     } else {
-      //缩小显示区
+      // 缩小显示区
       this.narrow(rateConstant)
     }
     this._position = this._area.startPosition
   }
+
   /**
    * 让窗体平行移动的方法
    *
    * @memberof ShowScreen
    */
-  public move(deviationX: number, deviationY: number) {
+  public move(deviationX: number, deviationY: number): void {
     this.area.startPosition.x += deviationX
     this.area.startPosition.y += deviationY
     this.area.endPosition.x += deviationX
@@ -330,7 +335,7 @@ export default class ShowScreen {
    * @param {number} rateConstant
    * @memberof ShowScreen
    */
-  public enlarge(rateConstant: number) {
+  public enlarge(rateConstant: number): void {
     this.magnification *= rateConstant
     // const mouseXAxisPosition  = ;
     this._area.startPosition.x =
@@ -352,13 +357,14 @@ export default class ShowScreen {
         rateConstant +
       this.currentMousePositionAbsolute.y
   }
+
   /**
    * 缩小显示区
    *
    * @param {number} rateConstant
    * @memberof ShowScreen
    */
-  public narrow(rateConstant: number) {
+  public narrow(rateConstant: number): void {
     this.magnification /= rateConstant
     this._area.startPosition.x =
       this.currentMousePositionAbsolute.x -
@@ -386,47 +392,47 @@ export default class ShowScreen {
    * @param {MouseEvent} event
    * @memberof ShowScreen
    */
-  private onMouseDown = (event: MouseEvent) => {
+  private readonly onMouseDown = (event: MouseEvent) => {
     this.currentMousePositionAbsolute = this.relativeToAbsolute(
       new Position(event.clientX, event.clientY)
     )
     if (event.button === 0) {
-      //左键按下
+      // 左键按下
       console.log(this.stateTheMouse)
 
-      if (this.stateTheMouse == StateTheMouse.NORMAL) {
+      if (this.stateTheMouse === StateTheMouse.NORMAL) {
         this.stateTheMouse = StateTheMouse.PRESS
-        if (this.pattern == Pattern.ADJUSTMENT_MODE) {
-          //工作区拖动
+        if (this.pattern === Pattern.ADJUSTMENT_MODE) {
+          // 工作区拖动
           this.stateTheMouse = StateTheMouse.DRAG
-        } else if (this.pattern == Pattern.NORMAL) {
+        } else if (this.pattern === Pattern.NORMAL) {
           const pressToPosition = this.currentMousePositionAbsolute
 
           for (let i = 0; i < this.list.length; i++) {
             const element = this.list[i]
 
             if (element.checkIsPress(pressToPosition)) {
-              //判断有没有点到圆球
-              //这里是已经检测到按到了小球启动了拖动状态
+              // 判断有没有点到圆球
+              // 这里是已经检测到按到了小球启动了拖动状态
 
               this.stateTheMouse = StateTheMouse.DRAG
               element.isPressTo = true
               this.accordingToStar = element
             } else {
-              //如果没有触发其他效果就只认为按了一下
+              // 如果没有触发其他效果就只认为按了一下
               this.stateTheMouse = StateTheMouse.PRESS
             }
           }
-        } else if (this.pattern == Pattern.NEW_MODEL) {
-          //新建模式新建一个星球
+        } else if (this.pattern === Pattern.NEW_MODEL) {
+          // 新建模式新建一个星球
           const star = new Star(this.currentMousePositionAbsolute.clone())
           star.isPressTo = true
           this.accordingToStar = star
           this.newLanch(star)
-          //拖动模式
+          // 拖动模式
           this.stateTheMouse = StateTheMouse.DRAG
         }
-      } else if (this.stateTheMouse == StateTheMouse.LAUNCH) {
+      } else if (this.stateTheMouse === StateTheMouse.LAUNCH) {
         this.lanchUp()
         this.stateTheMouse = StateTheMouse.NORMAL
       }
@@ -441,30 +447,31 @@ export default class ShowScreen {
    * @param {MouseEvent} e
    * @memberof ShowScreen
    */
-  private onMouseMove = (e: MouseEvent) => {
-    //当前鼠标在宇宙中的真实坐标
+  private readonly onMouseMove = (e: MouseEvent) => {
+    // 当前鼠标在宇宙中的真实坐标
     this.currentMousePositionAbsolute = this.relativeToAbsolute(
       new Position(e.clientX, e.clientY)
     )
 
-    if (this.stateTheMouse == StateTheMouse.DRAG) {
-      //鼠标按下事件
+    if (this.stateTheMouse === StateTheMouse.DRAG) {
+      // 鼠标按下事件
 
-      if (this.pattern == Pattern.NORMAL) {
-        //正常的按键模式
+      if (this.pattern === Pattern.NORMAL) {
+        // 正常的按键模式
         this.drag(e)
-      } else if (this.pattern == Pattern.ADJUSTMENT_MODE) {
-        //窗口调整模式
+      } else if (this.pattern === Pattern.ADJUSTMENT_MODE) {
+        // 窗口调整模式
         this.dragShowScreen(e)
-      } else if (this.pattern == Pattern.NEW_MODEL) {
+      } else if (this.pattern === Pattern.NEW_MODEL) {
         this.dragNewBuiltStar(e)
       }
-    } else if (this.stateTheMouse == StateTheMouse.LAUNCH) {
-      //鼠标为箭头加速状态
+    } else if (this.stateTheMouse === StateTheMouse.LAUNCH) {
+      // 鼠标为箭头加速状态
       this.lanchMove()
     }
   }
-  public dragNewBuiltStar(e: MouseEvent) {
+
+  public dragNewBuiltStar(e: MouseEvent): void {
     if (this.accordingToStar) {
       this.accordingToStar.r = Position.distance(
         this.accordingToStar.position,
@@ -472,15 +479,18 @@ export default class ShowScreen {
       )
     }
   }
-  private newLanch(star: Star) {
-    //新建一个弹性移动对象
+
+  private newLanch(star: Star): void {
+    // 新建一个弹性移动对象
     this.lanch = new Lanch(star, this.currentMousePositionAbsolute)
     this.renderList.push(this.lanch)
   }
-  private lanchMove() {
+
+  private lanchMove(): void {
     this.lanch.arrow.endPosition = this.currentMousePositionAbsolute
   }
-  private lanchUp() {
+
+  private lanchUp(): void {
     this.lanch.star.spe.x =
       (this.lanch.arrow.endPosition.x - this.lanch.arrow.startPosition.x) * 2
     this.lanch.star.spe.y =
@@ -498,9 +508,9 @@ export default class ShowScreen {
    * @private
    * @memberof ShowScreen
    */
-  private onMouseUp = () => {
-    if (this.pattern == Pattern.NEW_MODEL) {
-      if (this.stateTheMouse == StateTheMouse.DRAG) {
+  private readonly onMouseUp = () => {
+    if (this.pattern === Pattern.NEW_MODEL) {
+      if (this.stateTheMouse === StateTheMouse.DRAG) {
         this.stateTheMouse = StateTheMouse.LAUNCH
       }
     } else {
@@ -509,11 +519,11 @@ export default class ShowScreen {
       this.stateTheMouse = StateTheMouse.NORMAL
     }
 
-    //取消拖动
+    // 取消拖动
     if (this.accordingToStar) {
       this.accordingToStar.isPressTo = false
     }
-    //消除负载
+    // 消除负载
   }
 
   /**
@@ -522,7 +532,7 @@ export default class ShowScreen {
    * @param {MouseEvent} event
    * @memberof ShowScreen
    */
-  private dragShowScreen = (event: MouseEvent) => {
+  private readonly dragShowScreen = (event: MouseEvent) => {
     this._area.startPosition.x += event.movementX * -1 * this.magnification
     this._area.startPosition.y += event.movementY * -1 * this.magnification
     this._area.endPosition.x += event.movementX * -1 * this.magnification
@@ -534,10 +544,10 @@ export default class ShowScreen {
    * @param {MouseEvent} event
    * @memberof ShowScreen
    */
-  private drag = (event: MouseEvent) => {
+  private readonly drag = (event: MouseEvent) => {
     if (this.accordingToStar) {
-      //求相对于上一次移动当前小球移动的速度
-      let absolutePositon = this.relativeToAbsolute(
+      // 求相对于上一次移动当前小球移动的速度
+      const absolutePositon = this.relativeToAbsolute(
         new Position(event.clientX, event.clientY)
       )
       if (this.lastTimeMouseEvent) {
@@ -577,14 +587,14 @@ export default class ShowScreen {
     moveTimeBefore: Date,
     movePositionAfter: Position,
     moveTimeAfter: Date
-  ) {
+  ): Spe {
     const beforeMovingToPresentTime =
       moveTimeAfter.getMilliseconds() - moveTimeBefore.getMilliseconds()
-    let xSpe =
+    const xSpe =
       ((movePositionAfter.x - movePositionBefore.x) /
         beforeMovingToPresentTime) *
       1000
-    let ySpe =
+    const ySpe =
       ((movePositionAfter.y - movePositionBefore.y) /
         beforeMovingToPresentTime) *
       1000
@@ -599,7 +609,7 @@ export default class ShowScreen {
    * @memberof ShowScreen
    */
   private show(): void {
-    //一个和画布一样大的正方形，用来清空画布
+    // 一个和画布一样大的正方形，用来清空画布
     // this.ctx.fillStyle = "#000000";
 
     this.ctx.fillRect(0, 0, this.width, this.height)
@@ -611,7 +621,7 @@ export default class ShowScreen {
       }
     }
 
-    //渲染自定义渲染
+    // 渲染自定义渲染
     for (let i = 0; i < this.renderList.length; i++) {
       const render = this.renderList[i]
       render.render(this.ctx, this)
@@ -624,9 +634,9 @@ export default class ShowScreen {
    * @param {Render} render
    * @memberof ShowScreen
    */
-  removeRender(render: Render) {
+  removeRender(render: Render): void {
     for (let i = 0; i < this.renderList.length; i++) {
-      if (render == this.renderList[i]) {
+      if (render === this.renderList[i]) {
         this.renderList.splice(i, 1)
       }
     }
@@ -639,27 +649,27 @@ export default class ShowScreen {
    * @param {Render} newRender
    * @memberof ShowScreen
    */
-  replaceRender(usedRender: Render, newRender: Render) {
+  replaceRender(usedRender: Render, newRender: Render): void {
     for (let i = 0; i < this.renderList.length; i++) {
-      if (this.renderList[i] == usedRender) {
+      if (this.renderList[i] === usedRender) {
         this.renderList[i] = newRender
       }
     }
   }
 
-  private renderState() {
+  private renderState(): void {
     this.fpsStatistics++
     const fontSize = 20
     this.ctx.save()
     this.ctx.beginPath()
     this.ctx.fillStyle = '#ffffff'
-    this.ctx.font = 'bold ' + fontSize + 'px serif'
-    this.ctx.fillText('FPS:' + this.FPS, 20, fontSize * 1.3)
+    this.ctx.font = 'bold ' + fontSize.toString() + 'px serif'
+    this.ctx.fillText('FPS:' + this.FPS.toString(), 20, fontSize * 1.3)
     this.ctx.fillText(
-      '鼠标位置:' +
-        Math.floor(this.currentMousePositionAbsolute.x) +
-        ',' +
-        Math.floor(this.currentMousePositionAbsolute.y),
+      `鼠标位置:${Math.floor(
+        this.currentMousePositionAbsolute.x
+      )} ,${Math.floor(this.currentMousePositionAbsolute.y)}
+    `,
       20,
       fontSize * 1.3 * 2
     )
@@ -680,39 +690,13 @@ export default class ShowScreen {
    *
    * @memberof ShowScreen
    */
-  relativeToAbsolute(position: Position) {
+  relativeToAbsolute(position: Position): Position {
     const newPosition = new Position(
       position.x * this.magnification + this._area.startPosition.x,
       position.y * this.magnification + this._area.startPosition.y
     )
     return newPosition
   }
-}
-
-/**
- * NORMAL是正常状态
- * PRESS 是鼠标按下状态
- * DRAG 是鼠标拖动物体的状态
- * @export
- * @enum {number}
- */
-export enum StateTheMouse {
-  /**
-   *正常模式
-   */
-  NORMAL,
-  /**
-   * 按下鼠标
-   */
-  PRESS,
-  /**
-   * 拖动模式
-   */
-  DRAG,
-  /**
-   * 弹力弹弓模式加速
-   */
-  LAUNCH
 }
 
 /**
@@ -730,26 +714,4 @@ export class LastTimeMouseEvent {
     this.mouseEvent = mouseEvent
     this.listTime = new Date()
   }
-}
-
-/**
- * 状态
- * 此枚举作用是控制按键工作模式，比如现在按下shift应该快捷快件应该如何工作等
- *
- * @export
- * @enum {number}
- */
-export enum Pattern {
-  /**
-   * 此模式可以调整星星的位置
-   */
-  NORMAL = 0,
-  /**
-   * 此模式调整显示区位置和大小的功能
-   */
-  ADJUSTMENT_MODE = 1,
-  /**
-   * 新建模式
-   */
-  NEW_MODEL = 2
 }

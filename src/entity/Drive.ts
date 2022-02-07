@@ -8,6 +8,7 @@ export default class {
   public get fps(): number {
     return this._fps
   }
+
   public set fps(value: number) {
     this._fps = value
     this.basicTimout = 1000 / this._fps
@@ -23,6 +24,7 @@ export default class {
   public get magnification(): number {
     return this._magnification
   }
+
   public set magnification(value: number) {
     this._magnification = value
     this.timeout = this.basicTimout / this._magnification
@@ -35,7 +37,8 @@ export default class {
    * @type {number}
    */
   private _basicTimout: number = 10
-  private set basicTimout(value: number) {
+  // eslint-disable-next-line accessor-pairs
+  public set basicTimout(value: number) {
     this._basicTimout = value
     this.timeout = value / this._magnification
   }
@@ -68,11 +71,12 @@ export default class {
     this.fps = fps
     this.continue()
   }
+
   /**
    * 终止驱动器
    *
    */
-  public stop() {
+  public stop(): void {
     if (this.id) {
       clearTimeout(this.id)
       this.id = null
@@ -83,7 +87,7 @@ export default class {
    * 继续执行驱动器
    *
    */
-  public continue() {
+  public continue(): void {
     if (!this.id) {
       this.id = setTimeout(this.drive, this.timeout)
     }
@@ -97,7 +101,7 @@ export default class {
    * @protected
    * @param {Function} run
    */
-  private drive = () => {
+  private readonly drive = () => {
     this.run()
     this.id = setTimeout(this.drive, this.timeout)
   }

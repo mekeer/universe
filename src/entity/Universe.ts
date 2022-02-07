@@ -1,11 +1,9 @@
 import ByGravity from './ByGravity'
-import initUniverseByRandom from './initUniverseByRandom'
+import InitUniverseByRandom from './initUniverseByRandom'
 import Position from './Position'
-import position from './Position'
 import ShowScreen from './ShowScreen'
 import Spe from './Spe'
 import Star from './Star'
-import Stars from './Star'
 import Area from './Area'
 import Render from './Render'
 import Drive from './Drive'
@@ -53,9 +51,9 @@ export default class extends Render {
    * 存放星球的列表
    *
    * @protected
-   * @type {Array<Stars>}
+   * @type {Array<Star>}
    */
-  protected list: Array<Stars>
+  protected list: Star[]
 
   /**
    * 宇宙的区域
@@ -69,7 +67,7 @@ export default class extends Render {
     this.canvas = canvas
     this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
     this.drive.fps = fps
-    this.list = new Array<Stars>()
+    this.list = new Array<Star>()
 
     this.init()
   }
@@ -78,12 +76,12 @@ export default class extends Render {
    * 初始化方法
    *
    */
-  init() {
+  init(): void {
     this.screen = new ShowScreen(
       this.canvas,
       this.ctx,
       this.list,
-      new position(),
+      new Position(),
       this.canvas.offsetHeight,
       this.canvas.offsetWidth
     )
@@ -91,10 +89,10 @@ export default class extends Render {
 
     this.constellation = this.screen.area.clone()
 
-    //让显示窗渲染当前线框
+    // 让显示窗渲染当前线框
     this.screen.renderList.push(this)
 
-    new initUniverseByRandom().run(this.list, this.screen)
+    new InitUniverseByRandom().run(this.list, this.screen)
     this.drive.run = () => {
       this.gravity()
       this.currentframe++
@@ -102,8 +100,9 @@ export default class extends Render {
       this.move()
     }
   }
+
   currentframe: number = 0
-  render(ctx: CanvasRenderingContext2D, showScreen: ShowScreen) {
+  render(ctx: CanvasRenderingContext2D, showScreen: ShowScreen): void {
     this.showConstellation(ctx, showScreen)
   }
 
@@ -114,23 +113,26 @@ export default class extends Render {
    * @param {CanvasRenderingContext2D} ctx
    * @param {ShowScreen} showScreen
    */
-  showConstellation(ctx: CanvasRenderingContext2D, showScreen: ShowScreen) {
+  showConstellation(
+    ctx: CanvasRenderingContext2D,
+    showScreen: ShowScreen
+  ): void {
     this.ctx.save()
     this.ctx.beginPath()
 
-    let newStartPos = this.absoluteToRelative(
+    const newStartPos = this.absoluteToRelative(
       this.constellation.startPosition,
       showScreen
     )
-    let newEndPos = this.absoluteToRelative(
+    const newEndPos = this.absoluteToRelative(
       this.constellation.endPosition,
       showScreen
     )
     this.ctx.strokeStyle = '#ff0000'
     this.ctx.lineWidth = 1
-    //虚线
+    // 虚线
     this.ctx.setLineDash([4, 4])
-    //蚂蚁线样式
+    // 蚂蚁线样式
     this.offset++
     this.ctx.lineDashOffset = -this.offset
     this.ctx.moveTo(newStartPos.x, newStartPos.y)
@@ -149,7 +151,7 @@ export default class extends Render {
    *  移动系统
    *
    */
-  move() {
+  move(): void {
     this.constellation.startPosition.x +=
       (this.constellation.endPosition.x - this.constellation.startPosition.x) *
       0.01
@@ -171,7 +173,7 @@ export default class extends Render {
         item.position.y += item.spe.y / this.drive.fps
       }
 
-      //判断当前元素所在区域
+      // 判断当前元素所在区域
       if (item.position.x - item.r <= this.constellation.startPosition.x) {
         this.constellation.startPosition.x = item.position.x - item.r
       }
@@ -191,7 +193,7 @@ export default class extends Render {
    * 万有引力生成器
    *
    */
-  gravity() {
+  gravity(): void {
     for (let i = 0; i < this.list.length; i++) {
       const star1 = this.list[i]
       for (let j = i + 1; j < this.list.length; j++) {
@@ -216,7 +218,7 @@ export default class extends Render {
    */
   accuracy: number = 0.6
 
-  quadtreeComputingGravity() {
+  quadtreeComputingGravity(): void {
     let rootLen = 0
     const stellWidth =
       this.constellation.endPosition.x - this.constellation.startPosition.x
@@ -247,61 +249,60 @@ export default class extends Render {
     )
 
     rootTree.list = this.list
-    let z = 0
 
-    //分区
-    const partition = (quadtTree: QuadtTree, i: number) => {
-      let LT: Array<Star> = []
+    // 分区
+    const partition = (quadtTree: QuadtTree, i: number): void => {
+      const LT: Star[] = []
       let LTQ: number = 0
-      let RT: Array<Star> = []
+      const RT: Star[] = []
       let RTQ: number = 0
-      let LB: Array<Star> = []
+      const LB: Star[] = []
       let LBQ: number = 0
-      let RB: Array<Star> = []
+      const RB: Star[] = []
       let RBQ: number = 0
-      z++
-      //终止检测
+
+      // 终止检测
       if (quadtTree.list.length <= 1) {
         return
       }
-      //检测星星属于哪个“天区”
+      // 检测星星属于哪个“天区”
       for (let i = 0; i < quadtTree.list.length; i++) {
         const star = quadtTree.list[i]
         if (star.position.y + star.r < quadtTree.bigStar.position.y) {
-          //如果x轴分隔线上面
+          // 如果x轴分隔线上面
           if (star.position.x + star.r < quadtTree.bigStar.position.x) {
-            //如果在y轴分隔线左边
-            //上左
+            // 如果在y轴分隔线左边
+            // 上左
             LT.push(star)
             LTQ += star.quality
           } else if (star.position.x - star.r > quadtTree.bigStar.position.x) {
-            //如果在y轴分隔线右边
-            //也包括了圆切线到y轴的情况
-            //上右
+            // 如果在y轴分隔线右边
+            // 也包括了圆切线到y轴的情况
+            // 上右
             RT.push(star)
             RTQ += star.quality
           }
         } else if (star.position.y - star.r > quadtTree.bigStar.position.y) {
-          //如果在分隔线下面 ，同样包括了x轴为切线的情况
+          // 如果在分隔线下面 ，同样包括了x轴为切线的情况
           if (star.position.x + star.r < quadtTree.bigStar.position.x) {
-            //如果在y轴分隔线左边
-            //下左
+            // 如果在y轴分隔线左边
+            // 下左
             LB.push(star)
             LBQ += star.quality
           } else if (star.position.x - star.r > quadtTree.bigStar.position.x) {
-            //如果在y轴分隔线右边
-            //也包括了圆切线到y轴的情况
-            //下右
+            // 如果在y轴分隔线右边
+            // 也包括了圆切线到y轴的情况
+            // 下右
             RB.push(star)
             RBQ += star.quality
           }
         }
       }
 
-      //检测“天区”内是否存在星星从而继续向下分区
+      // 检测“天区”内是否存在星星从而继续向下分区
       const sonLen = quadtTree.len / 2
 
-      if (sonLen == 0) {
+      if (sonLen === 0) {
         return
       }
       if (LTQ > 0) {
@@ -361,8 +362,8 @@ export default class extends Render {
 
     partition(rootTree, 1)
     // this.screen.renderList.push(rootTree.bigStar);
-    const compute = (quadtTree: QuadtTree, star: Star) => {
-      //结束条件
+    const compute = (quadtTree: QuadtTree, star: Star): void => {
+      // 结束条件
       if (quadtTree.leftTop) compute(quadtTree.leftTop, star)
       if (quadtTree.rightTop) compute(quadtTree.rightTop, star)
       if (quadtTree.leftBottom) compute(quadtTree.leftBottom, star)
@@ -373,16 +374,16 @@ export default class extends Render {
         !quadtTree.leftBottom &&
         !quadtTree.rightBottom
       ) {
-        //由于星球重合了所以直接可以按照大星球的方式计算引力和加速度
+        // 由于星球重合了所以直接可以按照大星球的方式计算引力和加速度
         // ByGravity.toGravity(quadtTree.bigStar, star, this.drive.fps);
-        //1.如果区域内只有一个球
-        if (quadtTree.list.length == 1 && quadtTree.list[0] != star) {
+        // 1.如果区域内只有一个球
+        if (quadtTree.list.length === 1 && quadtTree.list[0] !== star) {
           ByGravity.toGravity(quadtTree.list[0], star)
           //  ByGravity.toGravity(quadtTree.bigStar, star);
           quadtTree.list[0].byGravity.init()
           console.log(this.currentframe)
         } else {
-          //2.考虑到星球重合的情况（即使在显示中不可能发生）
+          // 2.考虑到星球重合的情况（即使在显示中不可能发生）
           // ByGravity.toGravityList(quadtTree.list, this.drive.fps);
         }
         // if (quadtTree.list[0] != star) {
@@ -393,20 +394,18 @@ export default class extends Render {
         return
       }
 
-      //2.如果精度达到预期值就可以计算引力
+      // 2.如果精度达到预期值就可以计算引力
       const distance = Position.distance(
         quadtTree.bigStar.position,
         star.position
       )
-      if (quadtTree.list[0] != star) {
+      if (quadtTree.list[0] !== star) {
         console.log(quadtTree.len)
       }
 
       if (quadtTree.len / distance < this.accuracy) {
         ByGravity.toGravity(quadtTree.bigStar, star)
         console.log('满足条件')
-
-        return
       }
     }
     for (let i = 0; i < this.list.length; i++) {
@@ -429,7 +428,7 @@ export default class extends Render {
    * 加速度生成器
    *
    */
-  acceleration(f: number, m: number) {
+  acceleration(f: number, m: number): number {
     return f / m
   }
 }
